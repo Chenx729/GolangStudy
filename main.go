@@ -31,17 +31,25 @@ func init() {
 }
 
 func main() {
-	res, err := Db.Exec("delete from person where user_id =?", 2)
+	conn, err := Db.Begin()
 	if err != nil {
-		fmt.Println("delete from person failed,", err)
+		fmt.Println("Begin failed,", err)
 		return
 	}
 	defer Db.Close() // 注意这行代码要写在上面err判断的下面
-
-	row, err := res.RowsAffected()
+	r, err := conn.Exec("insert into person (username,sex,email)values (?,?,?)", "stu001", "man", "stu01@qq.com")
 	if err != nil {
-		fmt.Println("row failed", err)
+		fmt.Println("insert into person failed", err)
+		conn.Rollback()
+		return
 	}
+	id, err := r.LastInsertId()
+	if err != nil {
+		fmt.Println("exec failed")
+		conn.Rollback()
+		return
+	}
+	fmt.Println("insert succeeded:", id)
 
-	fmt.Println("delete from person succeeded:", row)
+	conn.Commit()
 }
