@@ -31,13 +31,17 @@ func init() {
 }
 
 func main() {
-	var person []Person
-	err := Db.Select(&person, "select user_id, username, sex, email from person where user_id=?", 2)
+	res, err := Db.Exec("update person set username= ? where user_id = ?", "stu0003", 2)
 	if err != nil {
-		fmt.Println("select failed, ", err)
+		fmt.Println("update db failed,", err)
 		return
 	}
 	defer Db.Close() // 注意这行代码要写在上面err判断的下面
 
-	fmt.Println("select succ:", person)
+	row, err := res.RowsAffected()
+	if err != nil {
+		fmt.Println("row failed", err)
+	}
+
+	fmt.Println("update db succeeded:", row)
 }
