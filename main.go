@@ -31,17 +31,13 @@ func init() {
 }
 
 func main() {
-	r, err := Db.Exec("insert into person(username, sex, email)values(?, ?, ?)", "stu001", "man", "stu01@qq.com")
+	var person []Person
+	err := Db.Select(&person, "select user_id, username, sex, email from person where user_id=?", 2)
 	if err != nil {
-		fmt.Println("exec failed, ", err)
+		fmt.Println("select failed, ", err)
 		return
 	}
 	defer Db.Close() // 注意这行代码要写在上面err判断的下面
-	id, err := r.LastInsertId()
-	if err != nil {
-		fmt.Println("exec failed, ", err)
-		return
-	}
 
-	fmt.Println("insert succ:", id)
+	fmt.Println("select succ:", person)
 }
