@@ -31,9 +31,9 @@ func init() {
 }
 
 func main() {
-	res, err := Db.Exec("update person set username= ? where user_id = ?", "stu0003", 2)
+	res, err := Db.Exec("delete from person where user_id =?", 2)
 	if err != nil {
-		fmt.Println("update db failed,", err)
+		fmt.Println("delete from person failed,", err)
 		return
 	}
 	defer Db.Close() // 注意这行代码要写在上面err判断的下面
@@ -43,5 +43,5 @@ func main() {
 		fmt.Println("row failed", err)
 	}
 
-	fmt.Println("update db succeeded:", row)
+	fmt.Println("delete from person succeeded:", row)
 }
